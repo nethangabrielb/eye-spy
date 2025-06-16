@@ -8,6 +8,7 @@ exports.getAllGames = async (req, res) => {
   const games = await prisma.photo.findMany({
     include: {
       Character: true,
+      User: true,
     },
   });
 
@@ -16,6 +17,23 @@ exports.getAllGames = async (req, res) => {
   }
 
   res.json({ games });
+};
+
+exports.getGame = async (req, res) => {
+  const game = await prisma.photo.findUnique({
+    where: {
+      id: Number(req.params.photoId),
+    },
+    include: {
+      Character: true,
+      User: true,
+    },
+  });
+
+  if (!game) {
+    res.sendStatus(500);
+  }
+  res.json({ game });
 };
 
 exports.validateCoordinates = async (req, res) => {
@@ -80,6 +98,7 @@ exports.postScore = [
         photoId: req.body.photoId,
         score: req.body.score,
         name: req.body.name,
+        formattedScore: req.body.formatted,
       },
     });
 

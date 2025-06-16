@@ -6,6 +6,9 @@ const indexRouter = Router();
 // Get all photos and their information
 indexRouter.get("/photos", indexController.getAllGames);
 
+// Get just one photo and their information
+indexRouter.get("/photos/:photoId", indexController.getGame);
+
 // Post the info on specific photo and validate click coordinates with
 // Coordinates of characters in photo
 indexRouter.post("/photos/:photoId", indexController.validateCoordinates);
