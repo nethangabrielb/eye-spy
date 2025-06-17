@@ -8,7 +8,11 @@ exports.getAllGames = async (req, res) => {
   const games = await prisma.photo.findMany({
     include: {
       Character: true,
-      User: true,
+      User: {
+        orderBy: {
+          score: "asc",
+        },
+      },
     },
   });
 
@@ -26,7 +30,11 @@ exports.getGame = async (req, res) => {
     },
     include: {
       Character: true,
-      User: true,
+      User: {
+        orderBy: {
+          score: "asc",
+        },
+      },
     },
   });
 
@@ -76,14 +84,14 @@ exports.validateCoordinates = async (req, res) => {
 
 exports.postScore = [
   body("name").custom(async (value, { req }) => {
-    const isExist = await prisma.user.findUnique({
+    const isExist = await prisma.user.findFirst({
       where: {
         name: value,
         photoId: req.body.photoId,
       },
     });
     if (isExist) {
-      throw new Error("Name already exists.");
+      throw new Error("Name is already taken.");
     }
   }),
   async (req, res) => {

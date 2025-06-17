@@ -24,7 +24,7 @@ model Photo {
 
 model User {
   id             Int    @unique @default(autoincrement())
-  name           String @unique
+  name           String
   photo          Photo  @relation(fields: [photoId], references: [id])
   photoId        Int
   score          Int
