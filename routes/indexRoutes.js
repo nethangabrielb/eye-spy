@@ -3,6 +3,9 @@ const indexController = require("../controllers/indexController");
 
 const indexRouter = Router();
 
+// Health check / keep-alive ping target
+indexRouter.get("/health", indexController.health);
+
 // Get all photos and their information
 indexRouter.get("/photos", indexController.getAllGames);
 

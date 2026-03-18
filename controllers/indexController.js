@@ -1,8 +1,52 @@
 const { PrismaClient } = require("../generated/prisma");
 const { body, validationResult } = require("express-validator");
 const _ = require("lodash");
+const https = require("https");
 
 const prisma = new PrismaClient();
+
+const headRequest = (url) =>
+  new Promise((resolve, reject) => {
+    const req = https.request(url, { method: "HEAD" }, (res) => {
+      // Drain to free socket.
+      res.resume();
+      resolve({ statusCode: res.statusCode });
+    });
+    req.on("error", reject);
+    req.end();
+  });
+
+exports.health = async (req, res) => {
+  // Touch a public Supabase Storage asset so the Supabase project registers activity.
+  // This does not require any keys and is safe to call frequently.
+  const supabasePublicAsset =
+    "https://gcwuvahgrsxeubnvkbvd.supabase.co/storage/v1/object/public/photos/5days.jpg";
+
+  try {
+    // Also touch the database (Supabase Postgres) via Prisma to keep DB connections active.
+    // Keep it extremely lightweight to avoid any load/cost issues.
+    const [photoCount, supabase] = await Promise.all([
+      prisma.photo.count(),
+      headRequest(supabasePublicAsset),
+    ]);
+    res.status(200).json({
+      ok: true,
+      service: "wheres-waldo-backend",
+      db: { touched: true, photoCount },
+      supabase: { touched: true, statusCode: supabase.statusCode ?? null },
+      now: new Date().toISOString(),
+    });
+  } catch (e) {
+    // Still return 200 so uptime pings don't flap if Supabase has a blip.
+    res.status(200).json({
+      ok: true,
+      service: "wheres-waldo-backend",
+      db: { touched: false },
+      supabase: { touched: false, error: e?.message ?? "unknown error" },
+      now: new Date().toISOString(),
+    });
+  }
+};
 
 exports.getAllGames = async (req, res) => {
   const games = await prisma.photo.findMany({

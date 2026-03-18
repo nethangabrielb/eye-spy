@@ -12,7 +12,9 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^6.7.0",
+    "@supabase/supabase-js": "^2.99.2",
     "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
     "lodash": "^4.17.21",
