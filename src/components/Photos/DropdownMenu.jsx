@@ -12,18 +12,42 @@ const DropdownMenu = ({
     >
       {characters.map((char) => {
         return (
-          <img
-            id={char.id}
-            className={`${
-              char.isFound
-                ? "select-none opacity-50 cursor-default grayscale"
-                : "cursor-pointer hover:brightness-105 active:scale-[0.98]"
-            } sm:w-[56px] w-[36px] border-b border-last/15 last:border-b-0 p-1 bg-main/30`}
-            src={char.url}
-            alt=""
+          <button
             key={char.id}
+            type="button"
+            className={`relative sm:w-[56px] w-[36px] border-b border-last/15 last:border-b-0 p-1 bg-main/30 ${
+              char.isFound
+                ? "cursor-default"
+                : "cursor-pointer hover:brightness-105 active:scale-[0.98]"
+            }`}
             onClick={!char.isFound ? sendCoordinatesValidation : undefined}
-          ></img>
+            aria-label={char.isFound ? "Found" : "Not found"}
+          >
+            <img
+              id={char.id}
+              className={`w-full h-auto rounded-lg ${
+                char.isFound ? "select-none opacity-50 grayscale" : ""
+              }`}
+              src={char.url}
+              alt=""
+              draggable="false"
+            />
+            {char.isFound && (
+              <span className="absolute -top-1 -right-1 grid place-items-center w-5 h-5 rounded-full bg-emerald-500 text-white shadow border border-white/70">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M9.0 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"
+                  />
+                </svg>
+              </span>
+            )}
+          </button>
         );
       })}
     </div>

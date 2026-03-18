@@ -110,14 +110,38 @@ const GameStart = () => {
               {Object.keys(gameLocalStorage).length !== 0 &&
                 gameLocalStorage.Character.map((char) => {
                   return (
-                    <img
-                      src={char.url}
+                    <div
                       key={char.id}
-                      id={char.id}
-                      className="sm:w-[60px] w-[40px] h-auto rounded-xl border border-last/15 bg-main/40 p-1"
-                      alt=""
-                      draggable="false"
-                    />
+                      className={`relative sm:w-[60px] w-[40px] h-auto rounded-xl border border-last/15 bg-main/40 p-1 overflow-hidden ${
+                        char.isFound ? "ring-2 ring-emerald-500/70" : ""
+                      }`}
+                      title={char.isFound ? "Found" : "Not found"}
+                    >
+                      <img
+                        src={char.url}
+                        id={char.id}
+                        className={`w-full h-auto rounded-lg ${
+                          char.isFound ? "opacity-60 grayscale" : ""
+                        }`}
+                        alt=""
+                        draggable="false"
+                      />
+                      {char.isFound && (
+                        <span className="absolute -top-1 -right-1 grid place-items-center w-5 h-5 rounded-full bg-emerald-500 text-white shadow border border-white/70">
+                          <svg
+                            viewBox="0 0 24 24"
+                            width="14"
+                            height="14"
+                            aria-hidden="true"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M9.0 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                    </div>
                   );
                 })}
             </div>
